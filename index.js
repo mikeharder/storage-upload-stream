@@ -2,6 +2,7 @@ const { randomBytes } = require("crypto");
 const { PassThrough} = require("stream");
 const { DefaultHttpClient } = require("@azure/core-http");
 const { BlobServiceClient } = require("@azure/storage-blob");
+const { setLogLevel } = require("@azure/logger");
 
 const iterations = process.env.ITERATIONS || 1;
 const uploadSize = (process.env.UPLOAD_SIZE || 9) * 1024 * 1024;
@@ -20,7 +21,8 @@ async function main() {
     log(`BUFFER_SIZE: ${bufferSize}`);
     log(`MAX_CONCURRENCY: ${maxConcurrency}`);
 
-    requestLogger(require('https'));
+    setLogLevel("verbose");
+    requestLogger(require("https"));
 
     const blobServiceClient = BlobServiceClient.fromConnectionString(
         STORAGE_CONNECTION_STRING,
