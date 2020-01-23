@@ -4,8 +4,8 @@ const { DefaultHttpClient } = require("@azure/core-http");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
 const iterations = process.env.ITERATIONS || 1;
-const uploadSize = process.env.UPLOAD_SIZE || 9 * 1024 * 1024;
-const bufferSize = process.env.BUFFER_SIZE || 4 * 1024 * 1024;
+const uploadSize = (process.env.UPLOAD_SIZE || 9) * 1024 * 1024;
+const bufferSize = (process.env.BUFFER_SIZE || 4) * 1024 * 1024;
 const maxConcurrency = process.env.MAX_CONCURRENCY || 1;
 
 async function main() {
