@@ -1,1 +1,1 @@
-# js-storage-upload-stream
+# storage-upload-stream
