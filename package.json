@@ -1,0 +1,25 @@
+{
+  "name": "js-storage-upload-stream",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env NODE_DEBUG=http,net node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeharder/js-storage-upload-stream.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikeharder/js-storage-upload-stream/issues"
+  },
+  "homepage": "https://github.com/mikeharder/js-storage-upload-stream#readme",
+  "dependencies": {
+    "@azure/storage-blob": "^12.0.2"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3"
+  }
+}
