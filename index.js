@@ -1,5 +1,6 @@
 const { randomBytes } = require("crypto");
 const { PassThrough} = require("stream");
+const { DefaultHttpClient } = require("@azure/core-http");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
 const iterations = 1;
@@ -17,7 +18,10 @@ async function main() {
         throw new Error("Environment variable STORAGE_CONNECTION_STRING is not set");
     }
 
-    const blobServiceClient = BlobServiceClient.fromConnectionString(STORAGE_CONNECTION_STRING);
+    const blobServiceClient = BlobServiceClient.fromConnectionString(
+        STORAGE_CONNECTION_STRING,
+        { httpClient: new DefaultHttpClient() }
+    );
 
     const containerName = `container${new Date().getTime()}`;
     const containerClient = blobServiceClient.getContainerClient(containerName);

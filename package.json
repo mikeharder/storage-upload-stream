@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mikeharder/js-storage-upload-stream#readme",
   "dependencies": {
+    "@azure/core-http": "^1.0.3",
     "@azure/storage-blob": "^12.0.2"
   },
   "devDependencies": {
