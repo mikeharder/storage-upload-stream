@@ -3,20 +3,24 @@ const { PassThrough} = require("stream");
 const { DefaultHttpClient } = require("@azure/core-http");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
-const iterations = 1;
-const uploadSize = 9 * 1024 * 1024;
-const bufferSize = 4 * 1024 * 1024;
-const maxConcurrency = 1;
+const iterations = process.env.ITERATIONS || 1;
+const uploadSize = process.env.UPLOAD_SIZE || 9 * 1024 * 1024;
+const bufferSize = process.env.BUFFER_SIZE || 4 * 1024 * 1024;
+const maxConcurrency = process.env.MAX_CONCURRENCY || 1;
 
 async function main() {
-    requestLogger(require('http'));
-    requestLogger(require('https'));
-
     const STORAGE_CONNECTION_STRING = process.env.STORAGE_CONNECTION_STRING;
 
     if (!STORAGE_CONNECTION_STRING) {
         throw new Error("Environment variable STORAGE_CONNECTION_STRING is not set");
     }
+
+    log(`ITERATIONS: ${iterations}`);
+    log(`UPLOAD_SIZE: ${uploadSize}`);
+    log(`BUFFER_SIZE: ${bufferSize}`);
+    log(`MAX_CONCURRENCY: ${maxConcurrency}`);
+
+    requestLogger(require('https'));
 
     const blobServiceClient = BlobServiceClient.fromConnectionString(
         STORAGE_CONNECTION_STRING,
