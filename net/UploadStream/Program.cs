@@ -75,6 +75,10 @@ namespace UploadStream
                         MaximumTransferLength = _bufferSize
                     });
                     Log($"Uploaded blob {blobName}");
+
+                    Log($"Deleting blob {blobName}");
+                    await blobClient.DeleteAsync();
+                    Log($"Deleted blob {blobName}");
                 }
                 catch (Exception e)
                 {
