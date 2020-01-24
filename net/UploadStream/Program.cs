@@ -1,10 +1,11 @@
 ﻿using Azure.Core.Diagnostics;
+using Azure.Core.Pipeline;
 using Azure.Storage;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Specialized;
 using System;
+using System.Diagnostics.Tracing;
 using System.IO;
-using System.Reflection.Metadata;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace UploadStream
@@ -15,6 +16,8 @@ namespace UploadStream
         private static readonly int _uploadSize = GetEnv("UPLOAD_SIZE", 9) * 1024 * 1024;
         private static readonly int _bufferSize = GetEnv("BUFFER_SIZE", 4) * 1024 * 1024;
         private static readonly int _maxConcurrency = GetEnv("MAX_CONCURRENCY", 1);
+
+        private static readonly TimeSpan _httpClientTimeout = TimeSpan.FromSeconds(50);
 
         static async Task Main(string[] args)
         {
@@ -29,11 +32,20 @@ namespace UploadStream
             Log($"BUFFER_SIZE: {_bufferSize}");
             Log($"MAX_CONCURRENCY: {_maxConcurrency}");
 
-            // Enable SDK logging
-            using AzureEventSourceListener listener = AzureEventSourceListener.CreateConsoleLogger();
+            // Enable SDK logging (with timestamps)
+            using var listener = new AzureEventSourceListener(
+                (eventData, text) => Log(String.Format("[{1}] {0}: {2}", eventData.EventSource.Name, eventData.Level, text)),
+                EventLevel.Verbose);
 
-            var containerName = $"container{DateTime.Now.Ticks}";            
-            var containerClient = new BlobContainerClient(connectionString, containerName);
+            // TODO: Enable System.Net logging
+
+            var containerName = $"container{DateTime.Now.Ticks}";
+
+            // Test custom transport with shorter timeout
+            var containerClient = new BlobContainerClient(connectionString, containerName, new BlobClientOptions()
+            {
+                Transport = new HttpClientTransport(new HttpClient() { Timeout = _httpClientTimeout })
+            });
 
             Log($"Creating container {containerName}");
             await containerClient.CreateAsync();
@@ -43,7 +55,7 @@ namespace UploadStream
             new Random(0).NextBytes(randomBuffer);
             var randomStream = new NonSeekableMemoryStream(randomBuffer);
 
-            for (var i=0; i < _iterations; i++)
+            for (var i = 0; i < _iterations; i++)
             {
                 try
                 {
@@ -84,7 +96,8 @@ namespace UploadStream
             Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {value}");
         }
 
-        private class NonSeekableMemoryStream : MemoryStream {
+        private class NonSeekableMemoryStream : MemoryStream
+        {
             public NonSeekableMemoryStream(byte[] buffer) : base(buffer) { }
 
             // Forces BlobClient.UploadAsync() to upload in blocks regardless of size
