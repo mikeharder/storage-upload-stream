@@ -1,0 +1,14 @@
+{
+  "name": "force-reset",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env NODE_DEBUG=net node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cross-env": "^6.0.3"
+  }
+}
