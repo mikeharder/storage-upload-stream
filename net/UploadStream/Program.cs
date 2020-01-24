@@ -33,11 +33,13 @@ namespace UploadStream
             Log($"MAX_CONCURRENCY: {_maxConcurrency}");
 
             // Enable SDK logging (with timestamps)
-            using var listener = new AzureEventSourceListener(
+            using var azureListener = new AzureEventSourceListener(
                 (eventData, text) => Log(String.Format("[{1}] {0}: {2}", eventData.EventSource.Name, eventData.Level, text)),
                 EventLevel.Verbose);
 
-            // TODO: Enable System.Net logging
+            // Enable System.Net logging
+            using var httpListener = new LogEventListener("Microsoft-System-Net-Http");
+            using var socketsListener = new LogEventListener("Microsoft-System-Net-Sockets");
 
             var containerName = $"container{DateTime.Now.Ticks}";
 
@@ -104,5 +106,41 @@ namespace UploadStream
             public override bool CanSeek => false;
         }
 
+        private class LogEventListener : EventListener
+        {
+            private readonly string _name;
+            private readonly EventLevel _eventLevel;
+            private readonly EventKeywords _eventKeywords;
+
+            public LogEventListener(string name, EventLevel eventLevel = EventLevel.LogAlways, EventKeywords eventKeywords = EventKeywords.All)
+            {
+                _name = name;
+                _eventLevel = eventLevel;
+                _eventKeywords = eventKeywords;
+
+                foreach (var source in EventSource.GetSources())
+                {
+                    OnEventSourceCreated(source);
+                }
+            }
+
+            protected override void OnEventSourceCreated(EventSource eventSource)
+            {
+                base.OnEventSourceCreated(eventSource);
+
+                if (eventSource.Name.Equals(_name, StringComparison.OrdinalIgnoreCase))
+                {
+                    Log($"Adding event listener for {eventSource.Name} with level {_eventLevel} and keywords {_eventKeywords}");
+                    EnableEvents(eventSource, _eventLevel, _eventKeywords);
+                }
+            }
+
+            protected override void OnEventWritten(EventWrittenEventArgs eventData)
+            {
+                base.OnEventWritten(eventData);
+
+                Log($"{eventData.EventSource.Name}_{eventData.EventName}: {String.Join(',', eventData.Payload)}");
+            }
+        }
     }
 }
