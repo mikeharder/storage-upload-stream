@@ -1,5 +1,5 @@
 {
-  "name": "js-storage-upload-stream",
+  "name": "upload-stream",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,9 +13,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mikeharder/js-storage-upload-stream/issues"
+    "url": "https://github.com/mikeharder/storage-upload-stream/issues"
   },
-  "homepage": "https://github.com/mikeharder/js-storage-upload-stream#readme",
+  "homepage": "https://github.com/mikeharder/storage-upload-stream#readme",
   "dependencies": {
     "@azure/core-http": "^1.0.3",
     "@azure/logger": "^1.0.0",
