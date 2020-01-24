@@ -45,20 +45,27 @@ namespace UploadStream
 
             for (var i=0; i < _iterations; i++)
             {
-                Log($"Iteration {i}");
-
-                var blobName = $"blob{DateTime.Now.Ticks}";
-                var blobClient = containerClient.GetBlobClient(blobName);
-
-                randomStream.Seek(0, SeekOrigin.Begin);
-
-                Log($"Uploading blob {blobName}");
-                await blobClient.UploadAsync(randomStream, transferOptions: new StorageTransferOptions()
+                try
                 {
-                    MaximumConcurrency = _maxConcurrency,
-                    MaximumTransferLength = _bufferSize
-                });
-                Log($"Uploaded blob {blobName}");
+                    Log($"Iteration {i}");
+
+                    var blobName = $"blob{DateTime.Now.Ticks}";
+                    var blobClient = containerClient.GetBlobClient(blobName);
+
+                    randomStream.Seek(0, SeekOrigin.Begin);
+
+                    Log($"Uploading blob {blobName}");
+                    await blobClient.UploadAsync(randomStream, transferOptions: new StorageTransferOptions()
+                    {
+                        MaximumConcurrency = _maxConcurrency,
+                        MaximumTransferLength = _bufferSize
+                    });
+                    Log($"Uploaded blob {blobName}");
+                }
+                catch (Exception e)
+                {
+                    Log(e);
+                }
             }
 
             Log($"Deleting container {containerName}");
