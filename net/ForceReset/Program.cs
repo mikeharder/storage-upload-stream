@@ -31,11 +31,19 @@ namespace ForceReset
             var buffer = new byte[_bufferSize];
 
             Log($"Receiving up to {_bufferSize} bytes...");
-            var received = socket.Receive(buffer);
-            Log($"Received {received} bytes");
+
+            try
+            {
+                var received = socket.Receive(buffer);
+                Log($"Received {received} bytes");
+            }
+            catch (Exception e)
+            {
+                Log(e);
+            }
         }
-        
-        private static void Log(string value)
+
+        private static void Log(object value)
         {
             Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {value}");
         }
