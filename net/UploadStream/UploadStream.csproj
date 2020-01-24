@@ -1,13 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RestoreSources>
+      https://azuresdkartifacts.blob.core.windows.net/azure-sdk-for-net/index.json;
+      $(RestoreSources);
+    </RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Core" Version="1.0.1" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.2.0" />
+    <PackageReference Include="Azure.Core" Version="1.1.0-dev.20200124.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.2.0-dev.20200124.1" />
   </ItemGroup>
 
 </Project>
