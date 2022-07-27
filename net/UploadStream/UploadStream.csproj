@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Core" Version="1.1.0-dev.20200124.1" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.2.0-dev.20200124.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
   </ItemGroup>
 
 </Project>
